@@ -1,0 +1,28 @@
+# ── Web framework ──────────────────────────────────────────────
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+pydantic>=2.0.0
+
+# ── Agent orchestration ────────────────────────────────────────
+langgraph>=0.1.0
+
+# ── LLM client (Groq via OpenAI-compatible API) ────────────────
+openai>=1.30.0
+groq>=0.9.0
+
+# ── Search & scraping ──────────────────────────────────────────
+duckduckgo-search>=6.0.0
+beautifulsoup4>=4.12.0
+requests>=2.31.0
+certifi>=2024.2.2
+urllib3>=2.0.0
+lxml>=5.0.0          # faster BS4 parser (optional but recommended)
+
+# ── Environment ────────────────────────────────────────────────
+python-dotenv>=1.0.0
+
+# ── Testing ────────────────────────────────────────────────────
+pytest>=8.0.0
+pytest-cov>=5.0.0
+pytest-mock>=3.14.0
+httpx>=0.27.0        # required by FastAPI TestClient

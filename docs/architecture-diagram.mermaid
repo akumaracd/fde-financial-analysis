@@ -1,0 +1,89 @@
+%% FDE Financial Analysis Pipeline — Architecture Diagram
+%% To render: paste into https://mermaid.live or use the VS Code Mermaid extension
+
+flowchart TD
+    Client["fa:fa-globe REST Client\n(curl / PowerShell / browser)"]
+
+    subgraph API["FastAPI (backend/main.py)"]
+        POST["POST /run-analysis\n(async BackgroundTask)"]
+        GET_STATUS["GET /status/{run_id}"]
+        GET_RESULTS["GET /results/{run_id}"]
+        GET_DOWNLOAD["GET /download/{run_id}/{filename}"]
+        registry["run_registry: dict[run_id, state]"]
+    end
+
+    subgraph LangGraph["LangGraph StateGraph (backend/workflow.py)"]
+        R["fa:fa-search research_node\nAgent 1 — Research Analyst\nDuckDuckGo × 2 queries → Groq scoring"]
+        E["fa:fa-code extractor_node\nAgent 2 — Content Extraction\nBeautifulSoup (no LLM)"]
+        A["fa:fa-brain analysis_node\nAgent 3 — Enterprise Architect\nGroq synthesis (4 headings)"]
+        RI["fa:fa-exclamation-triangle risk_node\nAgent 4 — Risk Specialist\nGroq → 6-10 risks + regulatory refs"]
+        SC["fa:fa-table scoring_node\nAgent 5 — Investment Strategist\nGroq scores + server recalculates totals"]
+        RW["fa:fa-file-alt report_node\nAgent 6 — Management Consultant\nGroq report + write to disk"]
+        QA["fa:fa-check-circle qa_node\nAgent 7 — QA Director\nGroq rubric score 0-10"]
+        ROUTE{"qa_routing()\nscore ≥ 7.0?"}
+    end
+
+    subgraph MCP["MCP Tool Layer (backend/mcp_server/tools.py)"]
+        T1["search_sources()\nDuckDuckGo DDGS — no API key"]
+        T2["scrape_content()\nrequests + BeautifulSoup"]
+        T3["write_report()\ndisk → {run_id}_report.md"]
+        T4["save_decision_matrix()\ndisk → {run_id}_matrix.csv"]
+    end
+
+    subgraph Outputs["outputs/"]
+        F1["{run_id}_report.md"]
+        F2["{run_id}_matrix.csv"]
+    end
+
+    Groq["fa:fa-robot Groq LLM API\nfree tier · OpenAI-compatible\nconsole.groq.com"]
+
+    %% API ↔ Client
+    Client -->|"POST /run-analysis\ntopic, industry"| POST
+    Client -->|"GET /status/…"| GET_STATUS
+    Client -->|"GET /results/…"| GET_RESULTS
+    Client -->|"GET /download/…"| GET_DOWNLOAD
+
+    %% API → Pipeline
+    POST -->|"BackgroundTask\n→ ANALYSIS_GRAPH.invoke()"| R
+    GET_STATUS --> registry
+    GET_RESULTS --> registry
+
+    %% Pipeline sequential flow
+    R --> E --> A --> RI --> SC --> RW --> QA --> ROUTE
+
+    %% QA routing loop
+    ROUTE -->|"YES — score ≥ 7.0\nOR iterations exhausted"| END_NODE["fa:fa-flag END\nstatus = completed"]
+    ROUTE -->|"NO — score < 7.0\nAND iterations remain"| A
+
+    %% Agent ↔ MCP tools
+    R -.->|"search_sources()"| T1
+    E -.->|"scrape_content()"| T2
+    RW -.->|"write_report()"| T3
+    RW -.->|"save_decision_matrix()"| T4
+
+    %% MCP ↔ External
+    T1 -.-> Groq
+    T2 -.->|"HTTP GET"| Internet["fa:fa-cloud Internet\n(DuckDuckGo results pages)"]
+    T3 --> F1
+    T4 --> F2
+
+    %% Agents ↔ Groq (dashed = LLM calls)
+    R -.->|"source scoring"| Groq
+    A -.->|"synthesis"| Groq
+    RI -.->|"risk identification"| Groq
+    SC -.->|"approach scoring"| Groq
+    RW -.->|"report writing"| Groq
+    QA -.->|"rubric scoring"| Groq
+
+    %% Download ↔ Outputs
+    GET_DOWNLOAD --> Outputs
+
+    %% Styles
+    classDef agent fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a
+    classDef tool  fill:#dcfce7,stroke:#22c55e,color:#14532d
+    classDef store fill:#fef9c3,stroke:#ca8a04,color:#713f12
+    classDef api   fill:#f3e8ff,stroke:#a855f7,color:#581c87
+    class R,E,A,RI,SC,RW,QA agent
+    class T1,T2,T3,T4 tool
+    class F1,F2 store
+    class POST,GET_STATUS,GET_RESULTS,GET_DOWNLOAD api

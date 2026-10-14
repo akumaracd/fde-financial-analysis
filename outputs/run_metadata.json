@@ -1,0 +1,31 @@
+{
+  "run_id": "sample-run-001",
+  "topic": "AI Agent Adoption for Banking",
+  "industry": "Banking / Financial Services",
+  "status": "completed",
+  "qa_score": 8.5,
+  "qa_pass": true,
+  "iteration_count": 1,
+  "provider_used": "openrouter/openai/gpt-4o",
+  "error_count": 0,
+  "sources_found": 11,
+  "sources_scraped": 11,
+  "extracted_chars": 85132,
+  "risks_identified": 8,
+  "approaches_scored": 4,
+  "report_words": 847,
+  "files": {
+    "report": "ai_agent_adoption_for_banking_report.md",
+    "matrix": "ai_agent_adoption_for_banking_matrix.csv"
+  },
+  "agents_run": [
+    "research_node",
+    "extractor_node",
+    "analysis_node",
+    "risk_node",
+    "scoring_node",
+    "report_node",
+    "qa_node"
+  ],
+  "duration_seconds": 187
+}

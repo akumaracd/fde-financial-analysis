@@ -1,0 +1,5 @@
+approach,regulatory_compliance,security_privacy,scalability,tco,implementation_risk,vendor_maturity,weighted_total,verdict
+Cloud-Based AI Agents,8,8,9,7,7,8,7.85,Recommended
+Hybrid AI Agents,7,8,8,6,7,8,7.3,Recommended
+On-Premise AI Agents,6,9,5,5,6,7,6.4,Conditional
+Legacy AI Systems,4,5,4,4,5,6,4.55,Not Recommended

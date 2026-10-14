@@ -1,0 +1,5 @@
+approach,regulatory_compliance,security_privacy,scalability,tco,implementation_risk,vendor_maturity,weighted_total,verdict
+Managed AI Service from Tier-1 Cloud Provider,7,7,9,8,8,9,7.8,Recommended
+In-house AI Agent Platform,8,8,6,5,6,5,6.65,Recommended
+Third-Party Specialized AI Vendor (FinTech AI SaaS),5,5,7,7,5,6,5.7,Conditional
+Hybrid Edge-AI Deployment,6,6,5,4,4,5,5.15,Not Recommended

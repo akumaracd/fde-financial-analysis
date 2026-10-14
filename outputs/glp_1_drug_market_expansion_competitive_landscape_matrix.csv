@@ -1,0 +1,5 @@
+approach,regulatory_compliance,security_privacy,scalability,tco,implementation_risk,vendor_maturity,weighted_total,verdict
+AML Transaction Monitoring Enhancement,9,8,7,6,7,8,7.65,Recommended
+Biotech Credit Risk Modeling Platform,6,7,8,7,6,7,6.75,Conditional
+Market Intelligence Data Integration,5,6,8,8,7,7,6.6,Conditional
+Loan Origination System Modernization,5,6,7,5,5,6,5.6,Conditional
